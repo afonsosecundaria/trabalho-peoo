@@ -9,7 +9,7 @@ const db = mysql.createPool({
   host: "localhost",
   user: "root",
   password: "",
-  database: "login",
+  database: "SistemaVendas",
 });
 
 app.use(express.json());
@@ -17,23 +17,27 @@ app.use(cors());
 
 app.post("/cadastro", (req, res) => {
   const nome = req.body.nome;
-  const sobrenome = req.body.sobrenome;
   const email = req.body.email;
-  const password = req.body.password;
+  const endereco = req.body.endereco;
+  const telefone = req.body.telefone;
+  const password = req.body.senha;
 
 
-  db.query("SELECT * FROM users WHERE email = ?", [email], (err, result) => {
+  db.query("SELECT * FROM Usuario WHERE email = ?", [email], (err, result) => {
     if (err) {
       res.send(err);
     }
-    if (result.length == 0) {
+    if (result && result.length === 0) {
       bcrypt.hash(password, saltRounds, (err, hash) => {
+        if (err){
+          return res.send(err);
+        }
         db.query(
-          "INSERT INTO users (nome, sobrenome, email, password) VALUES (?,?,?,?)",
-          [nome, sobrenome, email, hash],
+          "INSERT INTO Usuario (nome, email, telefone, endereco, password) VALUES (?,?,?,?,?)",
+          [nome, email, telefone, endereco, hash],
           (error, response) => {
-            if (err) {
-              res.send(err);
+            if (error) {
+              return res.send(error);
             }
             res.send({ msg: "Usuário cadastrado com sucesso" });
           }
@@ -49,14 +53,14 @@ app.post("/login", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
 
-  db.query("SELECT * FROM users WHERE email = ?", [email], (err, result) => {
+  db.query("SELECT * FROM Usuario WHERE email = ?", [email], (err, result) => {
     if (err) {
       res.send(err);
     }
-    if (result.length > 0) {
+    if (result && result.length > 0) {
       bcrypt.compare(password, result[0].password, (error, response) => {
         if (error) {
-          res.send(error);
+          return res.send(error);
         }
         if (response) {
           res.send({ msg: "Usuário logado" });
