@@ -17,7 +17,7 @@ body {
   align-items: center;
   height: 100vh;
   margin: 0;
-  background-image: url('./src/imagens/ImagemDeFundo2.jpg')
+  background-image: url('../public/imagens/tigrinho.jpg')
 }
 
 .login-form {
@@ -90,5 +90,5 @@ h2 {
 }
 
 .login-link a:hover {
-  text-decoration: underline; 
+  text-decoration: underline;
 }
