@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import Login from "./App.jsx";
+import Login from "../components/LogineCadastro/LogineCadastro.jsx";
 import Home from "../components/Home/Home.jsx"
 import Sobre from "../components/Sobre/Sobre.jsx"
 

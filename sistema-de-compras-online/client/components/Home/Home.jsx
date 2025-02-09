@@ -7,10 +7,10 @@ const Home = () => {
       <header>
         <div className="logo">deChinelo</div>
         <nav>
-          <a href="/">Home</a>
-          <a href="#">Shop</a>
-          <a href="/sistema-de-compras-online/client/public/htmls_extras/sobre.html">Sobre</a>
-          <a href="/">Contato</a>
+          <a href="/home">Home</a>
+          <a href="/shop">Shop</a>
+          <a href="/sobre">Sobre</a>
+          <a href="/contato">Contato</a>
         </nav>
       </header>
 
