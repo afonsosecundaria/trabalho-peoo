@@ -1,12 +1,26 @@
 .container {
   display: flex;
-  justify-content: center;
+  flex-direction: column; 
+  /* justify-content: center; */
   align-items: center;
-  height: 100vh;
+  height: 130vh;
+  background-image: url("../../public/imagens/campeones.jpg");
+  width: 100vw; 
+  background-size: cover; 
+  background-position: center; 
+  background-repeat: no-repeat;
+}
+
+.bemvindo {
+  color: purple;
+  text-align: center;
+  padding-bottom: 20px;
+  font-size: 50px;
+  font-weight: bold; 
 }
 
 .loginForm {
-  width: 300px;
+  width: 350px;
   padding: 20px;
   border-radius: 10px;
   background-color: rgba(255, 255, 255, 0.7);
@@ -15,16 +29,17 @@
 }
 
 .signupForm {
-  width: 300px;
+  width: 350px;
   padding: 20px;
   border-radius: 10px;
   background-color: rgba(255, 255, 255, 0.7);
   box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
   text-align: center;
+  text-shadow: black;
 }
 
 .formGroup {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   position: relative;
 }
 
@@ -37,7 +52,7 @@
 }
 
 h2 {
-  color: orange;
+  color: purple;
   text-align: center;
   padding-top: 10px;
   padding-bottom: 10px;
@@ -49,7 +64,7 @@ h2 {
 }
 
 .loginLink a {
-  color: orange;
+  color: purple;
   text-decoration: none;
 }
 
@@ -60,7 +75,7 @@ h2 {
 button {
   width: 100%;
   padding: 10px;
-  background-color: orange;
+  background-color: purple;
   color: #fff;
   border: none;
   border-radius: 5px;
@@ -90,14 +105,13 @@ button:hover {
   background-color: #dd007f;
 }
 
-/* Estilo dos campos de input */
 input[type="email"],
 input[type="password"],
 input[type="text"] {
   width: 100%;
   padding: 10px;
   margin: 5px 0;
-  border: 1px solid orange;
+  border: 1px solid purple;
   border-radius: 5px;
   font-size: 14px;
 }

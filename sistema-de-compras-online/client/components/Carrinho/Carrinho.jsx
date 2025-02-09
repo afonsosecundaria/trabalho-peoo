@@ -1,6 +1,7 @@
 import React from 'react';
+import './Carrinho.css'
 
-const Sobre = () => {
+const Carrinho = () => {
   return (
     <div>
       <header>
@@ -13,15 +14,8 @@ const Sobre = () => {
           <a href="/">Entrar</a>
         </nav>
       </header>
-      <div>
-        <h1>Somos alunos do IFRN</h1>
-        <a href="https://github.com/gnarciso27">Visitar git Guilherme</a>
-        <br />
-        <br />
-        <a href="https://github.com/afonsosecundaria">Visitar git Afonso</a>
-      </div>
     </div>
   );
 };
 
-export default Sobre;
+export default Carrinho;

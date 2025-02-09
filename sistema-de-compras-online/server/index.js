@@ -15,6 +15,8 @@ const db = mysql.createPool({
 app.use(express.json());
 app.use(cors());
 
+// logica do login e cadastro do site
+
 app.post("/cadastro", (req, res) => {
   const nome = req.body.nome;
   const email = req.body.email;
@@ -74,6 +76,14 @@ app.post("/login", (req, res) => {
     }
   });
 });
+
+// logica de adicionar o item no carrinho no banco de dados
+
+
+
+
+
+
 
 app.listen(3001, () => {
   console.log("rodando na porta 3001");

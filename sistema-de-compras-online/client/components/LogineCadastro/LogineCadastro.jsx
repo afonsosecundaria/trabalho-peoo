@@ -51,6 +51,7 @@ function LogineCadastro() {
 
   return (
     <div className={styles.container}>
+      <div className={styles.bemvindo}>Bem vindo a Loja Dechinelo</div>
       {isLogin ? (
         <div className={styles.loginForm} id="login-form">
           <h2>Login</h2>
@@ -96,7 +97,6 @@ function LogineCadastro() {
           >
             <Form className={styles.signupFormInner} id="signup-form-inner">
               <h2>Cadastre-se</h2>
-
               <div className={styles.formGroup}>
                 <label htmlFor="signup-first-name">Nome:</label>
                 <Field type="text" id="signup-first-name" name="nome" required />
@@ -132,7 +132,6 @@ function LogineCadastro() {
                 <Field type="password" id="signup-confirm-password" name="confirmpassword" required />
                 <ErrorMessage component="span" name="confirmpassword" className={styles.formError} />
               </div>
-
               <button type="submit">Cadastrar</button>
 
               <div className={styles.loginLink}>
