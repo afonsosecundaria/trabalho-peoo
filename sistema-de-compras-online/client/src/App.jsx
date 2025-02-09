@@ -1,5 +1,6 @@
 import './App.css';
 import React, { useState } from 'react';
+import { useNavigate } from "react-router-dom";
 import {Formik, Form, Field, ErrorMessage} from "formik";
 import * as yup from "yup";
 import Axios from "axios";
@@ -7,12 +8,12 @@ import Axios from "axios";
 function App() {
   
   const [isLogin, setIsLogin] = useState(true);
-
+  const navigate = useNavigate();
   const cadastrarnodb = (values) => {
     Axios.post("http://localhost:3001/cadastro", {
       nome: values.nome,
       email: values.email,
-      senha: values.password,
+      password: values.password,
       endereco: values.endereco,
       telefone: values.telefone
 
@@ -25,11 +26,11 @@ function App() {
   const logarnodb = (values) =>{
     Axios.post("http://localhost:3001/login", {
       email: values.email,
-      senha: values.password,
+      password: values.password,
     }).then((response) => {
       alert(response.data.msg)
       if(response.data.msg === "Usuário logado"){
-        window.location.href = '/public/acervoprainiciantes.html';
+        navigate('/home');
       }
       console.log(response);
     });
@@ -142,7 +143,7 @@ function App() {
                 <div className="form-group">
                   <label for="signup-password">Senha:</label>
                   <Field type="password" id="signup-password" name="password" required/>
-                  <ErrorMessage component="span"name='password'
+                  <ErrorMessage component="span" name='password'
                   className='form-error'/>
                 </div>
               

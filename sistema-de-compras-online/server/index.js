@@ -20,7 +20,7 @@ app.post("/cadastro", (req, res) => {
   const email = req.body.email;
   const endereco = req.body.endereco;
   const telefone = req.body.telefone;
-  const password = req.body.senha;
+  const password = req.body.password;
 
 
   db.query("SELECT * FROM Usuario WHERE email = ?", [email], (err, result) => {
@@ -33,7 +33,7 @@ app.post("/cadastro", (req, res) => {
           return res.send(err);
         }
         db.query(
-          "INSERT INTO Usuario (nome, email, telefone, endereco, password) VALUES (?,?,?,?,?)",
+          "INSERT INTO Usuario (nome, email, telefone, endereco, senha) VALUES (?,?,?,?,?)",
           [nome, email, telefone, endereco, hash],
           (error, response) => {
             if (error) {
@@ -58,7 +58,7 @@ app.post("/login", (req, res) => {
       res.send(err);
     }
     if (result && result.length > 0) {
-      bcrypt.compare(password, result[0].password, (error, response) => {
+      bcrypt.compare(password, result[0].senha, (error, response) => {
         if (error) {
           return res.send(error);
         }
