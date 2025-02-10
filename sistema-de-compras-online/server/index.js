@@ -79,8 +79,47 @@ app.post("/login", (req, res) => {
 
 // logica de adicionar o item no carrinho no banco de dados
 
+app.post("/api/carrinho/adicionar", (req, res) => {
+  const { idUsuario, idProduto, quantidade, precoUnitario } = req.body;
 
+  // Verificar se o usuário já tem um carrinho
+  db.query("SELECT id FROM Carrinho WHERE idUsuario = ?", [idUsuario], (err, result) => {
+    if (err) return res.status(500).send(err);
 
+    let idCarrinho;
+    if (result.length === 0) {
+      // Criar carrinho se não existir
+      db.query("INSERT INTO Carrinho (idUsuario) VALUES (?)", [idUsuario], (err, result) => {
+        if (err) return res.status(500).send(err);
+
+        idCarrinho = result.insertId;
+
+        // Inserir o item no carrinho
+        const queryItemCarrinho = `
+          INSERT INTO ItemCarrinho (idCarrinho, idProduto, quantidade)
+          VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE quantidade = quantidade + ?`;
+        
+        db.query(queryItemCarrinho, [idCarrinho, idProduto, quantidade, quantidade], (err, result) => {
+          if (err) return res.status(500).send(err);
+          res.status(200).json({ message: "Produto adicionado ao carrinho!" });
+        });
+      });
+    } else {
+      // Carrinho já existe, inserir o item no carrinho
+      idCarrinho = result[0].id;
+
+      // Inserir o item no carrinho
+      const queryItemCarrinho = `
+        INSERT INTO ItemCarrinho (idCarrinho, idProduto, quantidade)
+        VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE quantidade = quantidade + ?`;
+
+      db.query(queryItemCarrinho, [idCarrinho, idProduto, quantidade, quantidade], (err, result) => {
+        if (err) return res.status(500).send(err);
+        res.status(200).json({ message: "Produto adicionado ao carrinho!" });
+      });
+    }
+  });
+});
 
 
 

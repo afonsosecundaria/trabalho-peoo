@@ -1,7 +1,28 @@
-import React from 'react';
-import './home.css'
+import React from "react";
+import "./home.css";
+import { useNavigate } from "react-router-dom";
+import Axios from "axios";
 
 const Home = () => {
+  const navigate = useNavigate();
+  const handleAddToCart = async (produto) => {
+    try {
+      const response = await Axios.post("http://localhost:3001/api/carrinho/adicionar", {
+        idUsuario: 1, 
+        idProduto: produto.id,
+        quantidade: 1, 
+        precoUnitario: produto.preco,
+      });
+
+      if (response.status === 200) {
+        alert("Produto adicionado ao carrinho!");
+        navigate("/carrinho");
+      }
+    } catch (error) {
+      console.error("Erro ao adicionar ao carrinho", error);
+    }
+  };
+
   return (
     <div>
       <header>
@@ -18,36 +39,40 @@ const Home = () => {
       <div className="hero">
         <h1>Bem-Vindo a nossa loja</h1>
         <p>Aqui você encontra os melhores produtos com as melhores ofertas!</p>
-        <button>Comprar agora</button>
       </div>
 
       <div className="products">
-        <div className="product">
-          <img src="../public/imagens/chicomoedas.jpeg" alt="Product 1" />
-          <h2>Camisa do Chico Moedas</h2>
-          <p>R$50.00</p>
-          <button>Comprar Produto</button>
-          <button>Adicionar ao Carrinho</button>
-        </div>
-        <div className="product">
-          <img src="../public/imagens/neymar.jpeg" alt="Product 2" />
-          <h2>Camisa do Neymar no Santos</h2>
-          <p>R$150.00</p>
-          <button>Comprar Produto</button>
-          <button>Adicionar ao Carrinho</button>
-        </div>
-        <div className="product">
-          <img src="../public/imagens/jair.jpg" alt="Product 3" />
-          <h2>Perfume Jair</h2>
-          <p>R$200.00</p>
-          <button>Comprar Produto</button>
-          <button>Adicionar ao Carrinho</button>
-        </div>
+        {[
+          {
+            id: 1,
+            nome: "Camisa do Chico Moedas",
+            preco: 50.0,
+            imagem: "../public/imagens/chicomoedas.jpeg",
+          },
+          {
+            id: 2,
+            nome: "Camisa do Neymar no Santos",
+            preco: 150.0,
+            imagem: "../public/imagens/neymar.jpeg",
+          },
+          {
+            id: 3,
+            nome: "Perfume Jair",
+            preco: 200.0,
+            imagem: "../public/imagens/jair.jpg",
+          },
+        ].map((produto) => (
+          <div className="product" key={produto.id}>
+            <img src={produto.imagem} alt={produto.nome} />
+            <h2>{produto.nome}</h2>
+            <p>R${produto.preco.toFixed(2)}</p>
+            <button>Comprar Produto</button>
+            <button onClick={() => handleAddToCart(produto)}>Adicionar ao Carrinho</button>
+          </div>
+        ))}
       </div>
 
-      <footer>
-        &copy; 2025 deChinelo, todos os direitos reservados.
-      </footer>
+      <footer>&copy; 2025 deChinelo, todos os direitos reservados.</footer>
     </div>
   );
 };

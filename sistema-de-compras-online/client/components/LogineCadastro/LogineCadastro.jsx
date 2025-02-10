@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as yup from "yup";
 import Axios from "axios";
-import styles from './LogineCadastro.module.css'; // Importando como módulo
+import styles from './LogineCadastro.module.css';
 
 function LogineCadastro() {
   const [isLogin, setIsLogin] = useState(true);
