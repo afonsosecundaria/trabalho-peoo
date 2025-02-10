@@ -1,8 +1,9 @@
 import React from 'react';
+import './Sobre.css'; 
 
 const Sobre = () => {
   return (
-    <div>
+    <div className="container">
       <header>
         <div className="logo">deChinelo</div>
         <nav>
@@ -13,12 +14,16 @@ const Sobre = () => {
           <a href="/">Entrar</a>
         </nav>
       </header>
-      <div>
-        <h1>Somos alunos do IFRN</h1>
-        <a href="https://github.com/gnarciso27">Visitar git Guilherme</a>
-        <br />
-        <br />
-        <a href="https://github.com/afonsosecundaria">Visitar git Afonso</a>
+      <div className="containerSobre">
+
+      
+        <div>
+          <h1>Somos alunos do IFRN</h1>
+          <a href="https://github.com/gnarciso27">Visitar git Guilherme</a>
+          <br />
+          <br />
+          <a href="https://github.com/afonsosecundaria">Visitar git Afonso</a>
+        </div>
       </div>
     </div>
   );

@@ -1,0 +1,19 @@
+.container{
+    flex-direction: column; 
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw; 
+}
+
+.containerSobre {
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw; 
+    background-image: url("../../public/imagens/pelada.png");
+    background-size: cover; 
+    background-position: center; 
+    background-repeat: no-repeat;
+    overflow: hidden;
+  }

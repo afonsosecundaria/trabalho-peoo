@@ -17,28 +17,31 @@ const Home = () => {
 
       <div className="hero">
         <h1>Bem-Vindo a nossa loja</h1>
-        <p>Descubra os melhores produtos e melhores ofertas!</p>
+        <p>Aqui você encontra os melhores produtos com as melhores ofertas!</p>
         <button>Comprar agora</button>
       </div>
 
       <div className="products">
         <div className="product">
-          <img src="/assets/download (1).jpg" alt="Product 1" />
-          <h2>Produto 1</h2>
-          <p>R$10.00</p>
-          <button>Adicionar ao carrinho</button>
+          <img src="../public/imagens/chicomoedas.jpeg" alt="Product 1" />
+          <h2>Camisa do Chico Moedas</h2>
+          <p>R$50.00</p>
+          <button>Comprar Produto</button>
+          <button>Adicionar ao Carrinho</button>
         </div>
         <div className="product">
-          <img src="/assets/download (2).jpg" alt="Product 2" />
-          <h2>Produto 2</h2>
-          <p>R$20.00</p>
-          <button>Adicionar ao carrinho</button>
+          <img src="../public/imagens/neymar.jpeg" alt="Product 2" />
+          <h2>Camisa do Neymar no Santos</h2>
+          <p>R$150.00</p>
+          <button>Comprar Produto</button>
+          <button>Adicionar ao Carrinho</button>
         </div>
         <div className="product">
-          <img src="/assets/download.jpg" alt="Product 3" />
-          <h2>Produto 3</h2>
-          <p>R$30.00</p>
-          <button>Adicionar ao carrinho</button>
+          <img src="../public/imagens/jair.jpg" alt="Product 3" />
+          <h2>Perfume Jair</h2>
+          <p>R$200.00</p>
+          <button>Comprar Produto</button>
+          <button>Adicionar ao Carrinho</button>
         </div>
       </div>
 
