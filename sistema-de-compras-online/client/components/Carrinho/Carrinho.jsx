@@ -28,24 +28,35 @@ const Carrinho = () => {
   const addProduct = async (produto) => {
     try {
       await Axios.post('http://localhost:3001/api/carrinho/adicionar', {
-        idUsuario: 1, // Supondo id do usuário seja 1
+        idUsuario: 1,
         idProduto: produto.id,
         quantidade: 1,
         precoUnitario: produto.preco,
       });
-
+  
+      // Recarregar o carrinho após adicionar o produto
+      const response = await Axios.get('http://localhost:3001/api/carrinho', {
+        params: { idUsuario: 1 },
+      });
+      setCart(response.data); // Atualiza o carrinho com os novos dados do servidor
+  
       alert('Produto adicionado ao carrinho!');
-      navigate('/carrinho'); // Redireciona para a página do carrinho
+      navigate('/carrinho');
     } catch (error) {
       console.error('Erro ao adicionar ao carrinho', error);
       alert('Erro ao adicionar produto ao carrinho');
     }
   };
+  
 
   // Remover produto do carrinho
-  const removeProduct = (id) => {
-    setCart(cart.filter(product => product.id !== id));
-    // Você pode fazer uma requisição ao backend para remover o item do carrinho
+  const removeProduct = async (id) => {
+    try {
+      await Axios.post('http://localhost:3001/api/carrinho/remover', { idProduto: id, idUsuario: 1 });
+      setCart(cart.filter(product => product.id !== id));
+    } catch (error) {
+      console.error('Erro ao remover produto do carrinho', error);
+    }
   };
 
   return (
@@ -62,15 +73,6 @@ const Carrinho = () => {
       </header>
 
       <div className='formCarrinho'>
-        <div className="buscarprodutos">
-          <input 
-            type="text" 
-            placeholder="Buscar produto..." 
-            value={search} 
-            onChange={(e) => setSearch(e.target.value)}
-          />
-          {/* Aqui você poderia mapear os produtos encontrados com base na busca */}
-        </div>
 
         <div className='tabelaprodutos'>
           <p>Produto</p>
@@ -86,10 +88,11 @@ const Carrinho = () => {
           ) : (
             cart.map((product) => (
               <div key={product.id} className="produto">
-                <p>{product.nome}</p> {/* Ajuste o nome do produto conforme necessário */}
-                <p>R${product.precoUnitario}</p>
-                <p>{product.quantidade}</p>
-                <p>R${(product.precoUnitario * product.quantidade).toFixed(2)}</p>
+                <img src={product.imagem} alt={product.nome} className="produtoImagem" /> {/* Exibir a imagem */}
+                <p>{product.nome}</p> {/* Nome do produto */}
+                <p>R${product.precoUnitario.toFixed(2)}</p> {/* Preço unitário */}
+                <p>{product.quantidade}</p> {/* Quantidade */}
+                <p>R${(product.precoUnitario * product.quantidade).toFixed(2)}</p> {/* Preço total */}
                 <button onClick={() => removeProduct(product.id)}>Remover</button>
               </div>
             ))

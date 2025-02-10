@@ -79,49 +79,108 @@ app.post("/login", (req, res) => {
 
 // logica de adicionar o item no carrinho no banco de dados
 
-app.post("/api/carrinho/adicionar", (req, res) => {
-  const { idUsuario, idProduto, quantidade, precoUnitario } = req.body;
+app.post("/api/carrinho/adicionar", async (req, res) => {
+  try {
+    const { idUsuario, idProduto, quantidade, precoUnitario } = req.body;
 
-  // Verificar se o usuário já tem um carrinho
-  db.query("SELECT id FROM Carrinho WHERE idUsuario = ?", [idUsuario], (err, result) => {
-    if (err) return res.status(500).send(err);
+    console.log("Recebendo requisição:", req.body);
 
-    let idCarrinho;
-    if (result.length === 0) {
-      // Criar carrinho se não existir
-      db.query("INSERT INTO Carrinho (idUsuario) VALUES (?)", [idUsuario], (err, result) => {
-        if (err) return res.status(500).send(err);
+    if (!idUsuario || !idProduto || !quantidade || !precoUnitario) {
+      return res.status(400).json({ error: "Dados incompletos na requisição" });
+    }
 
-        idCarrinho = result.insertId;
+    // Verificar se o produto já está no carrinho
+    const checkQuery = "SELECT * FROM Carrinho WHERE idUsuario = ? AND idProduto = ?";
+    db.query(checkQuery, [idUsuario, idProduto], (err, result) => {
+      if (err) {
+        console.error("Erro ao verificar produto no carrinho:", err);
+        return res.status(500).json({ error: "Erro no banco de dados", details: err });
+      }
 
-        // Inserir o item no carrinho
-        const queryItemCarrinho = `
-          INSERT INTO ItemCarrinho (idCarrinho, idProduto, quantidade)
-          VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE quantidade = quantidade + ?`;
-        
-        db.query(queryItemCarrinho, [idCarrinho, idProduto, quantidade, quantidade], (err, result) => {
-          if (err) return res.status(500).send(err);
+      if (result.length > 0) {
+        // Produto já está no carrinho, podemos atualizar a quantidade
+        const updateQuery = "UPDATE Carrinho SET quantidade = quantidade + ? WHERE idUsuario = ? AND idProduto = ?";
+        db.query(updateQuery, [quantidade, idUsuario, idProduto], (err, result) => {
+          if (err) {
+            console.error("Erro ao atualizar carrinho:", err);
+            return res.status(500).json({ error: "Erro no banco de dados", details: err });
+          }
+          res.status(200).json({ message: "Produto atualizado no carrinho!" });
+        });
+      } else {
+        // Produto não existe no carrinho, então adicionamos
+        const query = "INSERT INTO Carrinho (idUsuario, idProduto, quantidade, precoUnitario) VALUES (?, ?, ?, ?)";
+        db.query(query, [idUsuario, idProduto, quantidade, precoUnitario], (err, result) => {
+          if (err) {
+            console.error("Erro ao adicionar item ao carrinho:", err);
+            return res.status(500).json({ error: "Erro no banco de dados", details: err });
+          }
           res.status(200).json({ message: "Produto adicionado ao carrinho!" });
+        });
+      }
+    });
+  } catch (error) {
+    console.error("Erro inesperado no servidor:", error);
+    res.status(500).json({ error: "Erro interno no servidor" });
+  }
+});
+
+app.get('/api/carrinho', (req, res) => {
+  const { idUsuario } = req.query;
+
+  if (!idUsuario) {
+    return res.status(400).json({ error: 'idUsuario é necessário' });
+  }
+
+  const queryCarrinho = `
+    SELECT id FROM Carrinho WHERE idUsuario = ?
+  `;
+
+  db.query(queryCarrinho, [idUsuario], (err, result) => {
+    if (err) {
+      return res.status(500).json({ error: 'Erro ao verificar carrinho' });
+    }
+
+    if (result.length === 0) {
+      // Caso não exista o carrinho para o usuário, cria um novo
+      const queryCreateCarrinho = `
+        INSERT INTO Carrinho (idUsuario) VALUES (?)
+      `;
+      db.query(queryCreateCarrinho, [idUsuario], (errCreate, resultCreate) => {
+        if (errCreate) {
+          return res.status(500).json({ error: 'Erro ao criar carrinho' });
+        }
+
+        // Após criar o carrinho, podemos buscar os itens
+        const queryItems = `
+          SELECT p.id AS idProduto, p.nome, p.preco, ic.quantidade
+          FROM ItemCarrinho ic
+          JOIN Produto p ON ic.idProduto = p.id
+          WHERE ic.idCarrinho = ?
+        `;
+        db.query(queryItems, [resultCreate.insertId], (errItems, items) => {
+          if (errItems) {
+            return res.status(500).json({ error: 'Erro ao buscar itens do carrinho' });
+          }
+          res.json(items);
         });
       });
     } else {
-      // Carrinho já existe, inserir o item no carrinho
-      idCarrinho = result[0].id;
-
-      // Inserir o item no carrinho
-      const queryItemCarrinho = `
-        INSERT INTO ItemCarrinho (idCarrinho, idProduto, quantidade)
-        VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE quantidade = quantidade + ?`;
-
-      db.query(queryItemCarrinho, [idCarrinho, idProduto, quantidade, quantidade], (err, result) => {
-        if (err) return res.status(500).send(err);
-        res.status(200).json({ message: "Produto adicionado ao carrinho!" });
+      const queryItems = `
+        SELECT p.id AS idProduto, p.nome, p.preco, ic.quantidade
+        FROM ItemCarrinho ic
+        JOIN Produto p ON ic.idProduto = p.id
+        WHERE ic.idCarrinho = ?
+      `;
+      db.query(queryItems, [result[0].id], (errItems, items) => {
+        if (errItems) {
+          return res.status(500).json({ error: 'Erro ao buscar itens do carrinho' });
+        }
+        res.json(items);
       });
     }
   });
 });
-
-
 
 
 app.listen(3001, () => {

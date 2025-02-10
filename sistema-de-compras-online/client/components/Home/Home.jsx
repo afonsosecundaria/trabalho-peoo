@@ -47,19 +47,19 @@ const Home = () => {
             id: 1,
             nome: "Camisa do Chico Moedas",
             preco: 50.0,
-            imagem: "../public/imagens/chicomoedas.jpeg",
+            imagem: "/imagens/chicomoedas.jpeg",
           },
           {
             id: 2,
             nome: "Camisa do Neymar no Santos",
             preco: 150.0,
-            imagem: "../public/imagens/neymar.jpeg",
+            imagem: "/imagens/neymar.jpeg",
           },
           {
             id: 3,
             nome: "Perfume Jair",
             preco: 200.0,
-            imagem: "../public/imagens/jair.jpg",
+            imagem: "/imagens/jair.jpg",
           },
         ].map((produto) => (
           <div className="product" key={produto.id}>
