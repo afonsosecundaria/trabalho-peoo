@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import Axios from 'axios';
 import './Carrinho.css';
 
 const Carrinho = () => {
-  const navigate = useNavigate();
-  const [search, setSearch] = useState('');
   const [cart, setCart] = useState([]);
 
   // Carregar produtos do carrinho ao acessar a página
@@ -13,9 +10,9 @@ const Carrinho = () => {
     const loadCart = async () => {
       try {
         const response = await Axios.get('http://localhost:3001/api/carrinho', {
-          params: { idUsuario: 1 }, // Usando idUsuario para identificar o carrinho do usuário
+          params: { idUsuario: 1 }, 
         });
-        setCart(response.data); // Supondo que a resposta seja uma lista de itens no carrinho
+        setCart(response.data);
       } catch (error) {
         console.error('Erro ao carregar carrinho', error);
       }
@@ -38,22 +35,23 @@ const Carrinho = () => {
       const response = await Axios.get('http://localhost:3001/api/carrinho', {
         params: { idUsuario: 1 },
       });
-      setCart(response.data); // Atualiza o carrinho com os novos dados do servidor
+      setCart(response.data || []);
   
       alert('Produto adicionado ao carrinho!');
-      navigate('/carrinho');
     } catch (error) {
       console.error('Erro ao adicionar ao carrinho', error);
       alert('Erro ao adicionar produto ao carrinho');
     }
   };
   
-
   // Remover produto do carrinho
   const removeProduct = async (id) => {
     try {
       await Axios.post('http://localhost:3001/api/carrinho/remover', { idProduto: id, idUsuario: 1 });
-      setCart(cart.filter(product => product.id !== id));
+      const response = await Axios.get('http://localhost:3001/api/carrinho', {
+        params: { idUsuario: 1 },
+      });
+      setCart(response.data || []);
     } catch (error) {
       console.error('Erro ao remover produto do carrinho', error);
     }
@@ -88,11 +86,11 @@ const Carrinho = () => {
           ) : (
             cart.map((product) => (
               <div key={product.id} className="produto">
-                <img src={product.imagem} alt={product.nome} className="produtoImagem" /> {/* Exibir a imagem */}
-                <p>{product.nome}</p> {/* Nome do produto */}
-                <p>R${product.precoUnitario.toFixed(2)}</p> {/* Preço unitário */}
-                <p>{product.quantidade}</p> {/* Quantidade */}
-                <p>R${(product.precoUnitario * product.quantidade).toFixed(2)}</p> {/* Preço total */}
+                <img src={product.imagem} alt={product.nome} className="produtoImagem" /> 
+                <p>{product.nome}</p> 
+                <p>R${product.precoUnitario ? product.precoUnitario.toFixed(2) : "0.00"}</p>
+                <p>{product.quantidade}</p> 
+                <p>R${(product.precoUnitario && product.quantidade ? (product.precoUnitario * product.quantidade).toFixed(2) : "0.00")}</p>
                 <button onClick={() => removeProduct(product.id)}>Remover</button>
               </div>
             ))
