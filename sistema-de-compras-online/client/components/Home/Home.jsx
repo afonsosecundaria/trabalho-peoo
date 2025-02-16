@@ -19,7 +19,7 @@ const Home = () => {
         navigate("/carrinho");
       }
     } catch (error) {
-      console.error("Erro ao adicionar ao carrinho", error);
+      console.error("Erro ao adicionar ao carrinho", error.response ? error.response.data : error);
     }
   };
 

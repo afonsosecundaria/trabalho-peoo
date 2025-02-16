@@ -5,7 +5,6 @@ import './Carrinho.css';
 const Carrinho = () => {
   const [cart, setCart] = useState([]);
 
-  // Carregar produtos do carrinho ao acessar a página
   useEffect(() => {
     const loadCart = async () => {
       try {
@@ -21,7 +20,6 @@ const Carrinho = () => {
     loadCart();
   }, []);
 
-  // Adicionar um produto ao carrinho
   const addProduct = async (produto) => {
     try {
       await Axios.post('http://localhost:3001/api/carrinho/adicionar', {
@@ -31,7 +29,6 @@ const Carrinho = () => {
         precoUnitario: produto.preco,
       });
   
-      // Recarregar o carrinho após adicionar o produto
       const response = await Axios.get('http://localhost:3001/api/carrinho', {
         params: { idUsuario: 1 },
       });
@@ -44,17 +41,27 @@ const Carrinho = () => {
     }
   };
   
-  // Remover produto do carrinho
-  const removeProduct = async (id) => {
+  const removeProduct = async (idProduto) => {
+    const idUsuario = 1;
+    console.log("Removendo produto para idUsuario:", idUsuario);
+    console.log("Produto ID:", idProduto);
     try {
-      await Axios.post('http://localhost:3001/api/carrinho/remover', { idProduto: id, idUsuario: 1 });
+      await Axios.delete('http://localhost:3001/api/carrinho/remover', {
+        params: {idProduto, idUsuario },
+      });
       const response = await Axios.get('http://localhost:3001/api/carrinho', {
-        params: { idUsuario: 1 },
+        params: { idUsuario },
       });
       setCart(response.data || []);
     } catch (error) {
       console.error('Erro ao remover produto do carrinho', error);
     }
+  };
+  const formatPrice = (price) => {
+    if (price == null || isNaN(price)) {
+      return "0.00";
+    }
+    return price.toFixed(2);
   };
 
   return (
@@ -85,13 +92,13 @@ const Carrinho = () => {
             <p>Ainda nenhum produto no carrinho</p>
           ) : (
             cart.map((product) => (
-              <div key={product.id} className="produto">
+              <div key={product.idProduto} className="produto">
                 <img src={product.imagem} alt={product.nome} className="produtoImagem" /> 
                 <p>{product.nome}</p> 
-                <p>R${product.precoUnitario ? product.precoUnitario.toFixed(2) : "0.00"}</p>
+                <p>R${formatPrice(product.precoUnitario)}</p>
                 <p>{product.quantidade}</p> 
-                <p>R${(product.precoUnitario && product.quantidade ? (product.precoUnitario * product.quantidade).toFixed(2) : "0.00")}</p>
-                <button onClick={() => removeProduct(product.id)}>Remover</button>
+                <p>R${formatPrice(product.precoUnitario * product.quantidade)}</p>
+                <button onClick={() => removeProduct(product.idProduto)}>Remover</button>
               </div>
             ))
           )}

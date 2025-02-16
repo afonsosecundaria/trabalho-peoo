@@ -81,24 +81,18 @@ app.post("/login", (req, res) => {
 
 app.post("/api/carrinho/adicionar", (req, res) => {
   const { idUsuario, idProduto, quantidade, precoUnitario } = req.body;
-
   console.log("Recebendo requisição:", req.body);
 
   if (!idUsuario || !idProduto || !quantidade || !precoUnitario) {
     return res.status(400).json({ error: "Dados incompletos na requisição" });
   }
-
-  // Verifica se o carrinho já existe
   const checkCarrinhoQuery = "SELECT id FROM Carrinho WHERE idUsuario = ?";
   db.query(checkCarrinhoQuery, [idUsuario], (err, result) => {
     if (err) {
       console.error("Erro ao verificar carrinho:", err);
       return res.status(500).json({ error: "Erro no banco de dados", details: err });
     }
-
     let carrinhoId = result.length > 0 ? result[0].id : null;
-
-    // Caso não exista, cria um carrinho
     if (!carrinhoId) {
       const createCarrinhoQuery = "INSERT INTO Carrinho (idUsuario) VALUES (?)";
       db.query(createCarrinhoQuery, [idUsuario], (errCreate, resultCreate) => {
@@ -113,7 +107,6 @@ app.post("/api/carrinho/adicionar", (req, res) => {
       addItemCarrinho(carrinhoId);
     }
 
-    // Função para adicionar ou atualizar produto no carrinho
     function addItemCarrinho(carrinhoId) {
       const checkItemQuery = "SELECT * FROM ItemCarrinho WHERE idCarrinho = ? AND idProduto = ?";
       db.query(checkItemQuery, [carrinhoId, idProduto], (errCheckItem, resultItem) => {
@@ -123,7 +116,6 @@ app.post("/api/carrinho/adicionar", (req, res) => {
         }
 
         if (resultItem.length > 0) {
-          // Se o produto já estiver no carrinho, atualiza a quantidade
           const updateItemQuery = "UPDATE ItemCarrinho SET quantidade = quantidade + ? WHERE idCarrinho = ? AND idProduto = ?";
           db.query(updateItemQuery, [quantidade, carrinhoId, idProduto], (errUpdate, resultUpdate) => {
             if (errUpdate) {
@@ -133,7 +125,6 @@ app.post("/api/carrinho/adicionar", (req, res) => {
             res.status(200).json({ message: "Produto atualizado no carrinho!" });
           });
         } else {
-          // Se o produto não estiver no carrinho, insere o item
           const insertItemQuery = "INSERT INTO ItemCarrinho (idCarrinho, idProduto, quantidade, precoUnitario) VALUES (?, ?, ?, ?)";
           db.query(insertItemQuery, [carrinhoId, idProduto, quantidade, precoUnitario], (errInsert, resultInsert) => {
             if (errInsert) {
@@ -148,7 +139,8 @@ app.post("/api/carrinho/adicionar", (req, res) => {
   });
 });
 
-// Lógica de obter os itens do carrinho
+// api do carrinho
+
 app.get('/api/carrinho', (req, res) => {
   const { idUsuario } = req.query;
 
@@ -156,7 +148,6 @@ app.get('/api/carrinho', (req, res) => {
     return res.status(400).json({ error: 'idUsuario é necessário' });
   }
 
-  // Busca o carrinho do usuário
   const queryCarrinho = "SELECT id FROM Carrinho WHERE idUsuario = ?";
   db.query(queryCarrinho, [idUsuario], (err, result) => {
     if (err) {
@@ -168,8 +159,6 @@ app.get('/api/carrinho', (req, res) => {
     }
 
     const carrinhoId = result[0].id;
-
-    // Busca os itens no carrinho
     const queryItems = `
       SELECT p.id AS idProduto, p.nome, p.preco, ic.quantidade
       FROM ItemCarrinho ic
@@ -185,7 +174,38 @@ app.get('/api/carrinho', (req, res) => {
   });
 });
 
+// logica de remover carrinho no site
 
+app.delete('/api/carrinho/remover', (req, res) => {
+  const { idUsuario, idProduto } = req.query;
+
+  if (!idUsuario || !idProduto) {
+    return res.status(400).json({ error: 'idUsuario e idProduto são necessários' });
+  }
+  const queryCarrinho = "SELECT id FROM Carrinho WHERE idUsuario = ?";
+  db.query(queryCarrinho, [idUsuario], (err, result) => {
+    if (err) {
+      return res.status(500).json({ error: 'Erro ao verificar carrinho', details: err });
+    }
+
+    if (result.length === 0) {
+      return res.status(404).json({ error: "Carrinho não encontrado" });
+    }
+    const carrinhoId = result[0].id;
+    const queryRemove = "DELETE FROM ItemCarrinho WHERE idCarrinho = ? AND idProduto = ?";
+    db.query(queryRemove, [carrinhoId, idProduto], (errRemove, resultRemove) => {
+      if (errRemove) {
+        return res.status(500).json({ error: 'Erro ao remover item do carrinho', details: errRemove });
+      }
+      
+      if (resultRemove.affectedRows === 0) {
+        return res.status(404).json({ error: "Produto não encontrado no carrinho" });
+      }
+
+      res.status(200).json({ message: "Produto removido do carrinho!" });
+    });
+  });
+});
 
 app.listen(3001, () => {
   console.log("rodando na porta 3001");
