@@ -108,6 +108,7 @@ const Carrinho = () => {
             ))
           )}
         </div>
+        <button onClick={() => comprarProdut(product.idProduto)}>Comprar</button>
       </div>
     </div>
   );

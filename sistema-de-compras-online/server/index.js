@@ -207,6 +207,24 @@ app.delete('/api/carrinho/remover', (req, res) => {
   });
 });
 
+// api do pagamento 
+
+app.post("/api/pagamento", (req, res) => {
+  const { idUsuario, tipo, status, idPedido } = req.body;
+  
+  if (!idUsuario || !tipo || !status || !idPedido) {
+    return res.status(400).json({ error: "Dados incompletos para pagamento" });
+  }
+
+  const queryPagamento = "INSERT INTO Pagamento (idPedido, tipo, status, dataPagamento) VALUES (?, ?, ?, NOW())";
+  db.query(queryPagamento, [idPedido, tipo, status], (err, result) => {
+    if (err) {
+      return res.status(500).json({ error: "Erro ao processar pagamento", details: err });
+    }
+    res.status(200).json({ message: "Pagamento realizado com sucesso!" });
+  });
+});
+
 app.listen(3001, () => {
   console.log("rodando na porta 3001");
 });
