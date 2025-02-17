@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Axios from 'axios';
+import { useNavigate } from "react-router-dom";
 import './Carrinho.css';
 
 const Carrinho = () => {
   const [cart, setCart] = useState([]);
-
+  const navigate = useNavigate();
   useEffect(() => {
     const loadCart = async () => {
       try {
@@ -41,6 +42,10 @@ const Carrinho = () => {
     }
   };
   
+  const comprarProdut = async (idProduto) => {
+    navigate("/pagamento");
+  }
+
   const removeProduct = async (idProduto) => {
     const idUsuario = 1;
     console.log("Removendo produto para idUsuario:", idUsuario);
@@ -70,7 +75,6 @@ const Carrinho = () => {
         <div className="logo">deChinelo</div>
         <nav>
           <a href="/home">Home</a>
-          <a href="/shop">Shop</a>
           <a href="/carrinho">Carrinho</a>
           <a href="/sobre">Sobre</a>
           <a href="/">Entrar</a>
@@ -99,6 +103,7 @@ const Carrinho = () => {
                 <p>{product.quantidade}</p> 
                 <p>R${formatPrice(product.precoUnitario * product.quantidade)}</p>
                 <button onClick={() => removeProduct(product.idProduto)}>Remover</button>
+                <button onClick={() => comprarProdut(product.idProduto)}>Comprar</button>
               </div>
             ))
           )}

@@ -22,6 +22,9 @@ const Home = () => {
       console.error("Erro ao adicionar ao carrinho", error.response ? error.response.data : error);
     }
   };
+  const comprarproduto = async (produto) =>{
+    navigate("/pagamento");
+  }
 
   return (
     <div>
@@ -29,7 +32,6 @@ const Home = () => {
         <div className="logo">deChinelo</div>
         <nav>
           <a href="/home">Home</a>
-          <a href="/shop">Shop</a>
           <a href="/carrinho">Carrinho</a>
           <a href="/sobre">Sobre</a>
           <a href="/">Entrar</a>
@@ -66,7 +68,7 @@ const Home = () => {
             <img src={produto.imagem} alt={produto.nome} />
             <h2>{produto.nome}</h2>
             <p>R${produto.preco.toFixed(2)}</p>
-            <button>Comprar Produto</button>
+            <button onClick={() => comprarproduto(produto)}>Comprar Produto</button>
             <button onClick={() => handleAddToCart(produto)}>Adicionar ao Carrinho</button>
           </div>
         ))}
