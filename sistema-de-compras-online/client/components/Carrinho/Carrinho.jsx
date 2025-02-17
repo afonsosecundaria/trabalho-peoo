@@ -12,7 +12,12 @@ const Carrinho = () => {
         const response = await Axios.get('http://localhost:3001/api/carrinho', {
           params: { idUsuario: 1 }, 
         });
-        setCart(response.data);
+        console.log(response.data); 
+        const cartData = response.data.map(product => ({
+          ...product,
+          precoUnitario: product.preco || 0, // Caso o preco não venha, atribui 0
+        }));
+        setCart(cartData);
       } catch (error) {
         console.error('Erro ao carregar carrinho', error);
       }
@@ -42,8 +47,13 @@ const Carrinho = () => {
     }
   };
   
-  const comprarProdut = async (idProduto) => {
-    navigate("/pagamento");
+  const comprarProdut = async () => {
+    navigate("/pagamento", {
+      state: {
+        produtos: cart,
+        total: cart.reduce((acc, product) => acc + product.precoUnitario * product.quantidade, 0),
+      },
+    });
   }
 
   const removeProduct = async (idProduto) => {
@@ -103,12 +113,11 @@ const Carrinho = () => {
                 <p>{product.quantidade}</p> 
                 <p>R${formatPrice(product.precoUnitario * product.quantidade)}</p>
                 <button onClick={() => removeProduct(product.idProduto)}>Remover</button>
-                <button onClick={() => comprarProdut(product.idProduto)}>Comprar</button>
               </div>
             ))
           )}
         </div>
-        <button onClick={() => comprarProdut(product.idProduto)}>Comprar</button>
+        <button onClick={comprarProdut}>Comprar Todos</button>
       </div>
     </div>
   );

@@ -23,7 +23,12 @@ const Home = () => {
     }
   };
   const comprarproduto = async (produto) =>{
-    navigate("/pagamento");
+    navigate("/pagamento",  {
+      state: {
+        produtos: [produto],  
+        total: produto.preco,
+      },
+    });
   }
 
   return (
