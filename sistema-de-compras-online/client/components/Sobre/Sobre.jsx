@@ -3,7 +3,7 @@ import './Sobre.css';
 
 const Sobre = () => {
   return (
-    <div className="container">
+    <div className="containersobre">
       <header>
         <div className="logo">deChinelo</div>
         <nav>
