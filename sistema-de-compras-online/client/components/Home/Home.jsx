@@ -5,6 +5,21 @@ import Axios from "axios";
 
 const Home = () => {
   const navigate = useNavigate();
+  const [produtos, setProdutos] = useState([]);
+
+  useEffect(() => {
+    const fetchProdutos = async () => {
+      try {
+        const response = await Axios.get("http://localhost:3001/api/produtos");
+        setProdutos(response.data);
+      } catch (error) {
+        console.error("Erro ao buscar produtos:", error);
+      }
+    };
+
+    fetchProdutos();
+  }, []);
+
   const handleAddToCart = async (produto) => {
     try {
       const response = await Axios.post("http://localhost:3001/api/carrinho/adicionar", {
@@ -49,36 +64,16 @@ const Home = () => {
       </div>
 
       <div className="products">
-        {[
-          {
-            id: 1,
-            nome: "Camisa do Chico Moedas",
-            preco: 50.0,
-            imagem: "/imagens/chicomoedas.jpeg",
-          },
-          {
-            id: 2,
-            nome: "Camisa do Neymar no Santos",
-            preco: 150.0,
-            imagem: "/imagens/neymar.jpeg",
-          },
-          {
-            id: 3,
-            nome: "Perfume Jair",
-            preco: 200.0,
-            imagem: "/imagens/jair.jpg",
-          },
-        ].map((produto) => (
+        {produtos.map((produto) => (
           <div className="product" key={produto.id}>
-            <img src={produto.imagem} alt={produto.nome} />
             <h2>{produto.nome}</h2>
+            <p>{produto.descricao}</p>
             <p>R${produto.preco.toFixed(2)}</p>
-            <button onClick={() => comprarproduto(produto)}>Comprar Produto</button>
             <button onClick={() => handleAddToCart(produto)}>Adicionar ao Carrinho</button>
           </div>
         ))}
       </div>
-
+      <button onClick={() => navigate('/addproduto')}>Adicionar Produto</button>
       <footer>&copy; 2025 deChinelo, todos os direitos reservados.</footer>
     </div>
   );

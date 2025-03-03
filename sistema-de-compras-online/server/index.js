@@ -207,6 +207,37 @@ app.delete('/api/carrinho/remover', (req, res) => {
   });
 });
 
+// logica de cadastro de prodtuto
+
+app.get("/api/produtos", (req, res) => {
+  const query = "SELECT * FROM Produto";
+  db.query(query, (err, result) => {
+    if (err) {
+      return res.status(500).json({ error: "Erro ao buscar produtos", details: err });
+    }
+    res.status(200).json(result);
+  });
+});
+
+
+app.post("/api/produto/cadastrar", (req, res) => {
+  const { nome, descricao, preco, quantidadeEmEstoque, categoria } = req.body;
+
+  if (!nome || !descricao || !preco || !quantidadeEmEstoque || !categoria) {
+    return res.status(400).json({ error: "Todos os campos são obrigatórios" });
+  }
+
+  const query = "INSERT INTO Produto (nome, descricao, preco, quantidadeEmEstoque, categoria) VALUES (?, ?, ?, ?, ?)";
+  db.query(query, [nome, descricao, preco, quantidadeEmEstoque, categoria], (err, result) => {
+    if (err) {
+      return res.status(500).json({ error: "Erro ao cadastrar produto", details: err });
+    }
+    res.status(201).json({ message: "Produto cadastrado com sucesso!", produtoId: result.insertId });
+  });
+});
+
+
+
 // api do pagamento 
 
 app.post("/api/pagamento", (req, res) => {
