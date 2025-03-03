@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect} from "react";
 import "./home.css";
 import { useNavigate } from "react-router-dom";
 import Axios from "axios";
@@ -66,14 +66,16 @@ const Home = () => {
       <div className="products">
         {produtos.map((produto) => (
           <div className="product" key={produto.id}>
+            <img src="" alt="" />
             <h2>{produto.nome}</h2>
             <p>{produto.descricao}</p>
             <p>R${produto.preco.toFixed(2)}</p>
+            <button onClick={() => comprarproduto(produto)}>Comprar Produto</button>
             <button onClick={() => handleAddToCart(produto)}>Adicionar ao Carrinho</button>
           </div>
         ))}
       </div>
-      <button onClick={() => navigate('/addproduto')}>Adicionar Produto</button>
+      <button onClick={() => navigate('/addproduto')}>Cadastrar Produto</button>
       <footer>&copy; 2025 deChinelo, todos os direitos reservados.</footer>
     </div>
   );

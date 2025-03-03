@@ -15,8 +15,9 @@ const AddProduto = () => {
     const handleChange = (e) => {
         setProduto({ ...produto, [e.target.name]: e.target.value });
     };
-    const cadastrar = async () => {
+    const cadastrar = async (e) => {
         e.preventDefault();
+        console.log(produto);
         try {
             const response = await Axios.post("http://localhost:3001/api/produto/cadastrar", produto);
             if (response.status === 201) {
@@ -27,9 +28,6 @@ const AddProduto = () => {
             console.error("Erro ao cadastrar produto:", error);
             alert("Erro ao cadastrar produto");
           }
-    };
-    const voltar = () => {
-    navigate("/home"); 
     };
 
     return (
