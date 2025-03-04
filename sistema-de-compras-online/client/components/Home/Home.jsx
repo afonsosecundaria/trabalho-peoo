@@ -66,7 +66,7 @@ const Home = () => {
       <div className="products">
         {produtos.map((produto) => (
           <div className="product" key={produto.id}>
-            <img src="" alt="" />
+            <img src={`http://localhost:3001/uploads/${produto.imagem}`} alt={produto.nome} />
             <h2>{produto.nome}</h2>
             <p>{produto.descricao}</p>
             <p>R${produto.preco.toFixed(2)}</p>

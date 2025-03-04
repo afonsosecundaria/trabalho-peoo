@@ -4,6 +4,9 @@ const mysql = require("mysql");
 const cors = require("cors");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
+const multer = require('multer');
+const path = require('path');
+
 
 const db = mysql.createPool({
   host: "localhost",
@@ -219,22 +222,50 @@ app.get("/api/produtos", (req, res) => {
   });
 });
 
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/'); // pasta para armazenar as imagens
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname)); // nome único para a imagem
+  },
+});
 
-app.post("/api/produto/cadastrar", (req, res) => {
+const upload = multer({ storage: storage });
+
+// Rota para cadastrar produto com imagem
+app.post("/api/produto/cadastrar", upload.single('imagem'), (req, res) => {
   const { nome, descricao, preco, quantidadeEmEstoque, categoria } = req.body;
+  const imagem = req.file ? req.file.filename : null;  // obtém o nome do arquivo de imagem, se enviado
 
   if (!nome || !descricao || !preco || !quantidadeEmEstoque || !categoria) {
     return res.status(400).json({ error: "Todos os campos são obrigatórios" });
   }
 
-  const query = "INSERT INTO Produto (nome, descricao, preco, quantidadeEmEstoque, categoria) VALUES (?, ?, ?, ?, ?)";
-  db.query(query, [nome, descricao, preco, quantidadeEmEstoque, categoria], (err, result) => {
+  const query = "INSERT INTO Produto (nome, descricao, preco, quantidadeEmEstoque, categoria, imagem) VALUES (?, ?, ?, ?, ?, ?)";
+  db.query(query, [nome, descricao, preco, quantidadeEmEstoque, categoria, imagem], (err, result) => {
     if (err) {
       return res.status(500).json({ error: "Erro ao cadastrar produto", details: err });
     }
     res.status(201).json({ message: "Produto cadastrado com sucesso!", produtoId: result.insertId });
   });
 });
+
+// app.post("/api/produto/cadastrar", (req, res) => {
+//   const { nome, descricao, preco, quantidadeEmEstoque, categoria } = req.body;
+
+//   if (!nome || !descricao || !preco || !quantidadeEmEstoque || !categoria) {
+//     return res.status(400).json({ error: "Todos os campos são obrigatórios" });
+//   }
+
+//   const query = "INSERT INTO Produto (nome, descricao, preco, quantidadeEmEstoque, categoria) VALUES (?, ?, ?, ?, ?)";
+//   db.query(query, [nome, descricao, preco, quantidadeEmEstoque, categoria], (err, result) => {
+//     if (err) {
+//       return res.status(500).json({ error: "Erro ao cadastrar produto", details: err });
+//     }
+//     res.status(201).json({ message: "Produto cadastrado com sucesso!", produtoId: result.insertId });
+//   });
+// });
 
 
 
