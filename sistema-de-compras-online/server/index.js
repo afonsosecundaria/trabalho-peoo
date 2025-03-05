@@ -17,6 +17,7 @@ const db = mysql.createPool({
 
 app.use(express.json());
 app.use(cors());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // logica do login e cadastro do site
 
@@ -163,7 +164,7 @@ app.get('/api/carrinho', (req, res) => {
 
     const carrinhoId = result[0].id;
     const queryItems = `
-      SELECT p.id AS idProduto, p.nome, p.preco, ic.quantidade
+      SELECT p.id AS idProduto, p.nome, p.preco, ic.quantidade, CONCAT('http://localhost:3001/uploads/', p.imagem) AS imagemUrl
       FROM ItemCarrinho ic
       JOIN Produto p ON ic.idProduto = p.id
       WHERE ic.idCarrinho = ?
@@ -172,6 +173,7 @@ app.get('/api/carrinho', (req, res) => {
       if (errItems) {
         return res.status(500).json({ error: 'Erro ao buscar itens do carrinho', details: errItems });
       }
+      console.log(items);
       res.status(200).json(items);
     });
   });
@@ -250,24 +252,6 @@ app.post("/api/produto/cadastrar", upload.single('imagem'), (req, res) => {
     res.status(201).json({ message: "Produto cadastrado com sucesso!", produtoId: result.insertId });
   });
 });
-
-// app.post("/api/produto/cadastrar", (req, res) => {
-//   const { nome, descricao, preco, quantidadeEmEstoque, categoria } = req.body;
-
-//   if (!nome || !descricao || !preco || !quantidadeEmEstoque || !categoria) {
-//     return res.status(400).json({ error: "Todos os campos são obrigatórios" });
-//   }
-
-//   const query = "INSERT INTO Produto (nome, descricao, preco, quantidadeEmEstoque, categoria) VALUES (?, ?, ?, ?, ?)";
-//   db.query(query, [nome, descricao, preco, quantidadeEmEstoque, categoria], (err, result) => {
-//     if (err) {
-//       return res.status(500).json({ error: "Erro ao cadastrar produto", details: err });
-//     }
-//     res.status(201).json({ message: "Produto cadastrado com sucesso!", produtoId: result.insertId });
-//   });
-// });
-
-
 
 // api do pagamento 
 

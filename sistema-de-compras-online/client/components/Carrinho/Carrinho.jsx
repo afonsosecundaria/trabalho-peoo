@@ -6,6 +6,7 @@ import './Carrinho.css';
 const Carrinho = () => {
   const [cart, setCart] = useState([]);
   const navigate = useNavigate();
+
   useEffect(() => {
     const loadCart = async () => {
       try {
@@ -15,7 +16,8 @@ const Carrinho = () => {
         console.log(response.data); 
         const cartData = response.data.map(product => ({
           ...product,
-          precoUnitario: product.preco || 0, // Caso o preco não venha, atribui 0
+          precoUnitario: product.preco || 0,
+          imagemUrl: product.imagem ? `http://localhost:3001/uploads/${product.imagem}` : null, 
         }));
         setCart(cartData);
       } catch (error) {
@@ -26,26 +28,6 @@ const Carrinho = () => {
     loadCart();
   }, []);
 
-  const addProduct = async (produto) => {
-    try {
-      await Axios.post('http://localhost:3001/api/carrinho/adicionar', {
-        idUsuario: 1,
-        idProduto: produto.id,
-        quantidade: 1,
-        precoUnitario: produto.preco,
-      });
-  
-      const response = await Axios.get('http://localhost:3001/api/carrinho', {
-        params: { idUsuario: 1 },
-      });
-      setCart(response.data || []);
-  
-      alert('Produto adicionado ao carrinho!');
-    } catch (error) {
-      console.error('Erro ao adicionar ao carrinho', error);
-      alert('Erro ao adicionar produto ao carrinho');
-    }
-  };
   
   const comprarProdut = async () => {
     navigate("/pagamento", {
@@ -107,7 +89,11 @@ const Carrinho = () => {
           ) : (
             cart.map((product) => (
               <div key={product.idProduto} className="produto">
-                <img src={product.imagem} alt={product.nome} className="produtoImagem" /> 
+                  {product.imagemUrl ? (
+                  <img src={product.imagemUrl} alt={product.nome} className="produtoImagem" />
+                ) : (
+                  <p>Imagem não disponível</p>
+                )}
                 <p>{product.nome}</p> 
                 <p>R${formatPrice(product.precoUnitario)}</p>
                 <p>{product.quantidade}</p> 
