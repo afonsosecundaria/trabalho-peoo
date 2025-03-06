@@ -69,8 +69,7 @@ app.post("/login", (req, res) => {
           return res.send(error);
         }
         if (response) {
-          res.send({ msg: "Usuário logado" });
-          
+          res.send({ msg: "Usuário logado", idUsuario: result[0].id });
         } else {
           res.send({ msg: "Senha incorreta" });
         }
@@ -90,6 +89,7 @@ app.post("/api/carrinho/adicionar", (req, res) => {
   if (!idUsuario || !idProduto || !quantidade || !precoUnitario) {
     return res.status(400).json({ error: "Dados incompletos na requisição" });
   }
+
   const checkCarrinhoQuery = "SELECT id FROM Carrinho WHERE idUsuario = ?";
   db.query(checkCarrinhoQuery, [idUsuario], (err, result) => {
     if (err) {

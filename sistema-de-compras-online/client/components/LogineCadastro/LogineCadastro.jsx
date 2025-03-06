@@ -7,6 +7,7 @@ import styles from './LogineCadastro.module.css';
 
 function LogineCadastro() {
   const [isLogin, setIsLogin] = useState(true);
+  const [loading, setLoading] = useState(false)
   const navigate = useNavigate();
 
   const cadastrarnodb = (values) => {
@@ -23,16 +24,21 @@ function LogineCadastro() {
   };
 
   const logarnodb = (values) => {
+    setLoading(true);
     Axios.post("http://localhost:3001/login", {
       email: values.email,
       password: values.password,
     }).then((response) => {
+      setLoading(false);
       alert(response.data.msg)
       if(response.data.msg === "Usuário logado"){
+        localStorage.setItem("idUsuario", response.data.idUsuario);
         navigate('/home');
       }
       console.log(response);
-    });
+    }).catch(() => {
+      setLoading(false); // Finaliza o carregamento em caso de erro
+      alert("Erro ao fazer login");});
   };
 
   const validationcadastro = yup.object().shape({

@@ -7,11 +7,20 @@ const Carrinho = () => {
   const [cart, setCart] = useState([]);
   const navigate = useNavigate();
 
+  const getUserId = () => {
+    return localStorage.getItem("idUsuario");  // Recupera o id do usuário logado do localStorage
+  };
+
   useEffect(() => {
     const loadCart = async () => {
       try {
+        const idUsuario = getUserId();
+        if (!idUsuario) {
+          navigate("/");  // Caso não tenha um usuário logado, redireciona para a página de login
+          return;
+        }
         const response = await Axios.get('http://localhost:3001/api/carrinho', {
-          params: { idUsuario: 1 }, 
+          params: { idUsuario }, 
         });
         console.log(response.data); 
         const cartData = response.data.map(product => ({
@@ -39,7 +48,11 @@ const Carrinho = () => {
   }
 
   const removeProduct = async (idProduto) => {
-    const idUsuario = 1;
+    const idUsuario = getUserId();
+    if (!idUsuario) {
+      navigate("/"); // Caso não tenha um usuário logado, redireciona para a página de login
+      return;
+    }
     console.log("Removendo produto para idUsuario:", idUsuario);
     console.log("Produto ID:", idProduto);
     try {
