@@ -226,19 +226,18 @@ app.get("/api/produtos", (req, res) => {
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/'); // pasta para armazenar as imagens
+    cb(null, 'uploads/'); 
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname)); // nome único para a imagem
+    cb(null, Date.now() + path.extname(file.originalname)); 
   },
 });
 
 const upload = multer({ storage: storage });
 
-// Rota para cadastrar produto com imagem
 app.post("/api/produto/cadastrar", upload.single('imagem'), (req, res) => {
   const { nome, descricao, preco, quantidadeEmEstoque, categoria } = req.body;
-  const imagem = req.file ? req.file.filename : null;  // obtém o nome do arquivo de imagem, se enviado
+  const imagem = req.file ? req.file.filename : null; 
 
   if (!nome || !descricao || !preco || !quantidadeEmEstoque || !categoria) {
     return res.status(400).json({ error: "Todos os campos são obrigatórios" });

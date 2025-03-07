@@ -34,9 +34,9 @@ https://github.com/user-attachments/assets/20fb1166-86ae-49cb-a9e4-75b6d0f628fd
     ADD COLUMN imagem VARCHAR(255) DEFAULT NULL;
     SELECT * FROM Produto;
 
-    INSERT INTO Produto (id, nome, preco, quantidadeEmEstoque, categoria) VALUES (1, 'Camisa Chico Moedas', 50.00, 100, 1  );
-    INSERT INTO Produto (id, nome, preco, quantidadeEmEstoque, categoria) VALUES (2, 'Camisa Neymar santos', 150.00, 100, 1);
-    INSERT INTO Produto (id, nome, preco, quantidadeEmEstoque, categoria) VALUES (3, 'Perfume Jair', 200.00, 50, 2);
+    INSERT INTO Produto (id, nome, preco, quantidadeEmEstoque, categoria, imagem) VALUES (1, 'Camisa Chico Moedas', 50.00, 100, 'camisa', 'chicomoedas.jpeg'  );
+    INSERT INTO Produto (id, nome, preco, quantidadeEmEstoque, categoria, imagem) VALUES (2, 'Camisa Neymar santos', 150.00, 100, 'camisa', 'neymar.jpeg');
+    INSERT INTO Produto (id, nome, preco, quantidadeEmEstoque, categoria, imagem) VALUES (3, 'Perfume Jair', 200.00, 50, 'perfume', 'jair.jpg');
 
 
     CREATE TABLE Carrinho (

@@ -37,7 +37,7 @@ function LogineCadastro() {
       }
       console.log(response);
     }).catch(() => {
-      setLoading(false); // Finaliza o carregamento em caso de erro
+      setLoading(false); 
       alert("Erro ao fazer login");});
   };
 

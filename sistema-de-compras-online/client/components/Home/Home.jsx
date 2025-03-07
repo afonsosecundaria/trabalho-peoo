@@ -8,7 +8,7 @@ const Home = () => {
   const [produtos, setProdutos] = useState([]);
 
   const getUserId = () => {
-    return localStorage.getItem("idUsuario");  // Recupera o id do usuário logado
+    return localStorage.getItem("idUsuario"); 
   };
 
   useEffect(() => {
@@ -27,7 +27,7 @@ const Home = () => {
   const handleAddToCart = async (produto) => {
     const idUsuario = getUserId();
     if (!idUsuario) {
-      navigate("/");  // Caso não tenha um usuário logado, redireciona para a página de login
+      navigate("/");  
       return;
     }
     try {
